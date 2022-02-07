@@ -1,86 +1,83 @@
 #include "sort.h"
+
 /**
- * td_merge - divides input array in two halves,
- * calls itself for the two halves and then merges
- * the two sorted halves, merge() function is
- * used for merging two halves
- * @array: array of data to be sorted
- * @begin: start of array
- * @middle: middle of array
- * @end: end of array
- * @copy: copy of original array
+ * merge - Merges the splits from merge_sort2
+ * @array: Array split to merge
+ * @low: lowest index of split
+ * @middle: middle index of split
+ * @high: high index of split
+ * @temp: temp array for merging
  */
-void td_merge(int *array, size_t begin, size_t middle, size_t end, int *copy)
+
+void merge(int *array, int low, int middle, int high, int *temp)
 {
-	size_t i = begin, j = middle, k = begin, l = middle, flag = 0;
+	int i, j, k, l = 0, r = 0, n, left[4096], right[4096];
 
 	printf("Merging...\n");
-	printf("[left]: ");
-	while (k < middle)
+	i = low, j = middle + 1, k = l = 0;
+	while (i <= middle && j <= high)
 	{
-		if (flag)
-			printf(", ");
-		printf("%i", array[k]), k++, flag = 1;
-	}
-	printf("\n");
-	k = begin;
-	while (k < end)
-	{
-		if (i < middle && (j >= end || array[i] <= array[j]))
-			copy[k] = array[i], i++;
+		if (array[i] <= array[j])
+			temp[k] = left[l] = array[i], k++, i++, l++;
 		else
-			copy[k] = array[j], j++;
-		k++;
+			temp[k] = right[r] = array[j], k++, j++, r++;
 	}
-	printf("[Done]: ");
-	k = begin, flag = 0;
-	while (k < end)
+	while (i <= middle)
+		temp[k] = left[l] = array[i], k++, i++, l++;
+	while (j <= high)
+		temp[k] = right[r] = array[j], k++, j++, r++;
+	printf("[left]: ");
+	for (n = 0; n < l; n++)
+		(n == 0) ? printf("%d", left[n]) : printf(", %d", left[n]);
+	printf("\n[right]: ");
+	for (n = 0; n < r; n++)
+		(n == 0) ? printf("%d", right[n]) : printf(", %d", right[n]);
+	printf("\n[Done]: ");
+	for (i = low; i <= high; i++)
 	{
-		if (flag)
+		array[i] = temp[i - low], printf("%d", array[i]);
+		if (i != high)
 			printf(", ");
-		printf("%i", copy[k]), k++, flag = 1;
+		else
+			printf("\n");
 	}
-	printf("\n");
 }
-/**
- * top_downsplit - divides input array in two halves,
- * with the left array being smaller than the right array
- * @array: array of data to be sorted
- * @begin: Start of the array
- * @end: end of array
- * @copy: copy of the original array
- */
-void top_downsplit(int *array, size_t begin, size_t end, int *copy)
-{
-	size_t middle = 0;
 
-	if (end - begin <= 1)
-		return;
-	middle = (begin + end) / 2;
-	top_downsplit(copy, begin, middle, array);
-	top_downsplit(copy, middle, end, array);
-	td_merge(array, begin, middle, end, copy);
-}
 /**
- * merge_sort - divides input array in two halves,
- * calls itself for the two halves and then merges
- * the two sorted halves, merge() function is
- * used for merging the two halves
- * @array: array of data to be sorted
- * @size: size of the array
+ * merge_sort_2 - recurrsive function utilizing merge sort algo
+ * @array: array
+ * @low: lowest index of split
+ * @high: highest index of split
+ * @temp: temp array for mergin
  */
+
+void merge_sort_y(int *array, int low, int high, int *temp)
+{
+	int middle;
+
+	if (low < high)
+	{
+		middle = ((high + low - 1) / 2);
+		merge_sort_2(array, low, middle, temp);
+		merge_sort_2(array, middle + 1, high, temp);
+	}
+}
+
+/**
+ * merge_sort - sorts array with merge sort algo
+ * @array: array to sort
+ * @size: size of array to sort
+ */
+
 void merge_sort(int *array, size_t size)
 {
-	int *copy = NULL;
-	size_t i = 0;
+	int *temp;
 
-	if (!array || size < 2)
+	if (array == NULL || size < 2)
 		return;
-	while (i < size)
-		copy[i] = array[i], i++;
-	top_downsplit(array, 0, size, copy);
-	i = 0;
-	while (i < size)
-		array[i] = copy[i], i++;
-	free(copy);
+	temp = malloc(sizeof(int) * (size + 1));
+	if (temp == NULL)
+		return;
+	merge_sort_2(array, 0, size - 1, temp);
+	free(temp);
 }

@@ -1,8 +1,8 @@
 #include "sort.h"
 
 /**
- * merge - Merges the splits from merge_sort2
- * @array: Array split to merge
+ * merge - merges the splits from merge_sort2
+ * @array: array split to merge
  * @low: lowest index of split
  * @middle: middle index of split
  * @high: high index of split
@@ -51,7 +51,7 @@ void merge(int *array, int low, int middle, int high, int *temp)
  * @temp: temp array for mergin
  */
 
-void merge_sort_y(int *array, int low, int high, int *temp)
+void merge_sort_2(int *array, int low, int high, int *temp)
 {
 	int middle;
 

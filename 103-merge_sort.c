@@ -1,84 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "sort.h"
 
 /**
- * merge - Merges the splits from merge_sort_y
- * @array: Array split to merge
- * @low: lowest index of split
- * @middle: middle index of split
- * @high: high index of split
- * @temp: temp array for merging
+ * merge - merges to the array
+ * @array: the array to sort
+ * @li: index to start left array
+ * @ri: index to end right array
+ * @mid: index to stop left array
  */
 
-void merge(int *array, int low, int middle, int high, int *temp)
+void merge(int *array, int li, int mid, int ri)
 {
-	int i, j, k, l = 0, r = 0, n, left[4096], right[4096];
+	int i, j, k;
+	int n1 = mid - li + 1;
+	int n2 = ri - mid;
+	int left[1024], right[1024];
 
 	printf("Merging...\n");
-	i = low, j = middle + 1, k = l = 0;
-	while (i <= middle && j <= high)
-	{
-		if (array[i] <= array[j])
-			temp[k] = left[l] = array[i], k++, i++, l++;
-		else
-			temp[k] = right[r] = array[j], k++, j++, r++;
-	}
-	while (i <= middle)
-		temp[k] = left[l] = array[i], k++, i++, l++;
-	while (j <= high)
-		temp[k] = right[r] = array[j], k++, j++, r++;
+	for (i = 0; i < n1; i++)
+		left[i] = array[li + i];
 	printf("[left]: ");
-	for (n = 0; n < l; n++)
-		(n == 0) ? printf("%d", left[n]) : printf(", %d", left[n]);
-	printf("\n[right]: ");
-	for (n = 0; n < r; n++)
-		(n == 0) ? printf("%d", right[n]) : printf(", %d", right[n]);
-	printf("\n[Done]: ");
-	for (i = low; i <= high; i++)
+	print_array(left, n1);
+	for (j = 0; j < n2; j++)
 	{
-		array[i] = temp[i - low], printf("%d", array[i]);
-		if (i != high)
-			printf(", ");
-		else
-			printf("\n");
+		right[j] = array[mid + 1 + j];
 	}
+	printf("[right]: ");
+	print_array(right, n2);
+	for (i = 0, j = 0, k = li; i < n1 && j < n2; k++)
+	{
+		if (left[i] <= right[j])
+		{
+			array[k] = left[i];
+			i++;
+		}
+		else
+		{
+			array[k] = right[j];
+			j++;
+		}
+	}
+	for (; i < n1; i++, k++)
+		array[k] = left[i];
+	for (; j < n2; j++, k++)
+		array[k] = right[j];
+	printf("[Done]: ");
+	print_array(&array[li], n1 + n2);
 }
 
 /**
- * merge_sort_y - recurrsive function utilizing merge sort algo
- * @array: Array
- * @low: Lowest index of split
- * @high: highest index of split
- * @temp: temp array for mergin
+ * mergeSort - performs a merge sort on an array
+ * @array: the array to sort
+ * @li: index to start left array
+ * @ri: index to start right array
  */
 
-void merge_sort_y(int *array, int low, int high, int *temp)
+void mergeSort(int *array, int li, int ri)
 {
-	int middle;
+	int mid = (ri + li - 1) / 2;
 
-	if (low < high)
+	if (li < ri)
 	{
-		middle = ((high + low - 1) / 2);
-		merge_sort_y(array, low, middle, temp);
-		merge_sort_y(array, middle + 1, high, temp);
-		merge(array, low, middle, high, temp);
+		mergeSort(array, li, mid);
+		mergeSort(array, mid + 1, ri);
+
+		merge(array, li, mid, ri);
 	}
 }
 
 /**
- * merge_sort - Sorts array with merge sort algo
- * @array: array to sort
- * @size: Size of array to sort
+ * merge_sort - performs a merge sort on an array
+ * @array: the array to sort
+ * @size: number of elements in the array
  */
 
 void merge_sort(int *array, size_t size)
 {
-	int *temp;
-
-	if (array == NULL || size < 2)
-		return;
-	temp = malloc(sizeof(int) * (size + 1));
-	if (temp == NULL)
-		return;
-	merge_sort_y(array, 0, size - 1, temp);
-	free(temp);
+	if (size > 1)
+		mergeSort(array, 0, size - 1);
 }

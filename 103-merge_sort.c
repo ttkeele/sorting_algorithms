@@ -77,6 +77,6 @@ void mergeSort(int *array, int li, int ri)
 
 void merge_sort(int *array, size_t size)
 {
-	if (size > 1)
-		mergeSort(array, 0, size - 1);
+        if (size > 1)
+	        mergeSort(array, 0, size - 1);
 }

@@ -42,4 +42,8 @@ void bubble_sort(int *array, size_t size);
 void insertion_sort_list(listint_t **list);
 void selection_sort(int *array, size_t size);
 void quick_sort(int *array, size_t size);
+void heaped(int *array, size_t size);
+void sift_down(int *array, int low, int high, size_t size);
+void heap_sort(int *array, size_t size);
+void swap(int *array, int i, int j);
 #endif /* SORT_H */

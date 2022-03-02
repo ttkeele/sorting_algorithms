@@ -36,7 +36,9 @@ void heaped(int *array, size_t size)
 
 	while (low >= 0)
 	{
-		printf("BEFORE HEAPIFY SIFT_DOWN\n");
+
+		printf("BEFORE HEAPED SIFT_DOWN\n");
+
 		sift_down(array, low, size - 1, size);
 		low = low - 1;
 	}

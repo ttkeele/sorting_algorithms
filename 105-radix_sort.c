@@ -1,4 +1,9 @@
-#include "sort.h"
+#ifndef SORT
+#define SORT
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 /**
  * radix_sort - sort using a radix algorithm
@@ -40,3 +45,5 @@ void radix_sort(int *array, size_t size)
 	}
 	free(swap_arr);
 }
+
+#endif /* SORT */
